@@ -1,0 +1,51 @@
+name: Daily market brief
+
+on:
+  schedule:
+    # 07:35 America/New_York — standard time (EST, UTC-5)
+    - cron: "35 12 * * 1-5"
+    # 07:35 America/New_York — daylight time (EDT, UTC-4)
+    - cron: "35 11 * * 1-5"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: market_brief
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e .
+      - name: NYSE window guard
+        id: window
+        run: |
+          python - <<'PY'
+          import os
+          from datetime import datetime, timezone
+          from brief.pipeline import in_nyse_send_window
+          ok = in_nyse_send_window(datetime.now(timezone.utc))
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"run={'true' if ok else 'false'}\n")
+          PY
+      - name: Run brief
+        if: steps.window.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        run: python -m brief run --no-llm --skip-window-check
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+          BRIEF_LANG: bg
+      - name: Skip outside window
+        if: steps.window.outputs.run != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "Skipped — outside 07:30-08:30 ET guard"

@@ -1,0 +1,7 @@
+{
+  "sector_breadth": {"value": 0.72, "as_of": "2026-10-16T20:00:00+00:00"},
+  "rsp_spy_20d_rel_pct": {"value": 0.3, "as_of": "2026-10-16T20:00:00+00:00"},
+  "sector_details": {},
+  "stale_after_minutes": 120,
+  "source": "yfinance-fixture"
+}
