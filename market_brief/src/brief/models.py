@@ -70,6 +70,50 @@ class MarketSnapshot(BaseModel):
     sector_details: dict[str, DataPoint] = Field(default_factory=dict)
 
 
+GEX_DISPLAY_MAP: dict[str, str] = {"SPY": "SPX", "QQQ": "NDX"}
+
+
+class GexSymbolBlock(BaseModel):
+    """GEX levels from ORBIS sidecar (upstream ETF → index label for UI)."""
+
+    upstream_symbol: str
+    display_symbol: str
+    spot: DataPoint
+    net_gex: DataPoint
+    gamma_regime: DataPoint
+    call_wall: DataPoint
+    put_wall: DataPoint
+    zero_gamma: DataPoint
+    max_pain: DataPoint | None = None
+
+
+class ExposureFooter(BaseModel):
+    exposure_pct: int
+    bias: str
+    regime_label: str
+    new_entries: str
+    reasoning: list[str] = Field(default_factory=list)
+
+
+class EsTechnicals(BaseModel):
+    """ES daily technicals — Phase 2 scaffold allows all MISSING until collector lands."""
+
+    vs_20dma_pct: DataPoint
+    vs_50dma_pct: DataPoint
+    vs_200dma_pct: DataPoint
+    rsi: DataPoint
+    macd_state: DataPoint
+    atr: DataPoint
+    bollinger_position: DataPoint
+
+
+class KpiStrip(BaseModel):
+    es: DataPoint
+    nq: DataPoint
+    vix: DataPoint
+    put_call: DataPoint
+
+
 class CalendarEvent(BaseModel):
     title: str
     start_utc: datetime
@@ -93,6 +137,10 @@ class BriefPayload(BaseModel):
     narrative: NarrativeBlock
     degraded: bool = False
     collector_errors: list[str] = Field(default_factory=list)
+    gex_symbols: list[GexSymbolBlock] = Field(default_factory=list)
+    exposure_footer: ExposureFooter | None = None
+    technicals_es: EsTechnicals | None = None
+    kpi_strip: KpiStrip | None = None
 
 
 class NarrativeJSON(BaseModel):

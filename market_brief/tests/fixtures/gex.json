@@ -1,0 +1,32 @@
+{
+  "symbols": {
+    "SPY": {
+      "symbol": "SPY",
+      "source": "cache",
+      "stale": false,
+      "as_of": "2026-10-16T20:15:00+00:00",
+      "spot": {"value": 580.25, "as_of": "2026-10-16T20:15:00+00:00", "source": "cache"},
+      "net": {"value": 1250000000.0, "as_of": "2026-10-16T20:15:00+00:00", "source": "cache"},
+      "flip": {"value": 575.0, "as_of": "2026-10-16T20:15:00+00:00", "source": "cache"},
+      "callWall": {"value": 585.0, "as_of": "2026-10-16T20:15:00+00:00", "source": "cache"},
+      "putWall": {"value": 570.0, "as_of": "2026-10-16T20:15:00+00:00", "source": "cache"},
+      "maxPain": {"value": 580.0, "as_of": "2026-10-16T20:15:00+00:00", "source": "cache"},
+      "regime": {"value": null, "label": "positive", "as_of": "2026-10-16T20:15:00+00:00", "source": "cache"}
+    },
+    "QQQ": {
+      "symbol": "QQQ",
+      "source": "daily_gex",
+      "stale": true,
+      "as_of": "2026-10-15T20:00:00+00:00",
+      "spot": {"value": 502.1, "as_of": "2026-10-15T20:00:00+00:00", "source": "daily_gex"},
+      "net": {"value": -320000000.0, "as_of": "2026-10-15T20:00:00+00:00", "source": "daily_gex"},
+      "flip": {"value": 505.0, "as_of": "2026-10-15T20:00:00+00:00", "source": "daily_gex"},
+      "callWall": {"value": 510.0, "as_of": "2026-10-15T20:00:00+00:00", "source": "daily_gex"},
+      "putWall": {"value": 495.0, "as_of": "2026-10-15T20:00:00+00:00", "source": "daily_gex"},
+      "regime": {"value": null, "label": "negative", "as_of": "2026-10-15T20:00:00+00:00", "source": "daily_gex"}
+    }
+  },
+  "as_of": "2026-10-16T20:15:00+00:00",
+  "stale_after_minutes": 60,
+  "source": "orbis_sidecar-fixture"
+}

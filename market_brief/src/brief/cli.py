@@ -9,7 +9,14 @@ from brief.deliver.discord import discord_configured, send_discord
 from brief.deliver.telegram import send_telegram_html, telegram_configured
 from brief.health import ping_failure, ping_success
 from brief.pipeline import build_brief, in_nyse_send_window, is_total_failure, trading_date_now
-from brief.storage import already_sent, mark_sent, save_snapshot, write_dry_run_html
+from brief.render import render_orbis_html, telegram_orbis_summary
+from brief.storage import (
+    already_sent,
+    mark_sent,
+    save_snapshot,
+    write_dry_run_html,
+    write_orbis_html,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("brief")
@@ -37,6 +44,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Skip NYSE 07:30-08:30 ET guard (for CI/manual)",
     )
+    run.add_argument(
+        "--orbis-html",
+        action="store_true",
+        help="Also write ORBIS-branded mobile HTML (JSON-driven; no hardcoded market numbers)",
+    )
     return p.parse_args(argv)
 
 
@@ -63,10 +75,19 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     save_snapshot(payload)
 
+    orbis_path: Path | None = None
+    if args.orbis_html:
+        orbis_html = render_orbis_html(payload)
+        orbis_path = write_orbis_html(td, orbis_html)
+        logger.info("ORBIS HTML: %s", orbis_path)
+
     if args.dry_run:
         path = write_dry_run_html(td, html)
         logger.info("Dry run HTML: %s", path)
-        print(html)
+        if orbis_path:
+            print(orbis_html)
+        else:
+            print(html)
         ping_success()
         return 0
 
@@ -84,7 +105,12 @@ def cmd_run(args: argparse.Namespace) -> int:
             if not telegram_configured():
                 logger.error("Telegram not configured")
                 return 1
-            send_telegram_html(html)
+            if args.orbis_html and orbis_path:
+                send_telegram_html(
+                    telegram_orbis_summary(payload, html_path=str(orbis_path))
+                )
+            else:
+                send_telegram_html(html)
         elif deliver == "discord":
             if not discord_configured():
                 logger.error("Discord not configured")

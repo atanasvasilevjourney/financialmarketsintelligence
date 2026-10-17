@@ -1,0 +1,11 @@
+{
+  "spot": 502.1,
+  "net": -320000000,
+  "flip": 505.0,
+  "callWall": 510.0,
+  "putWall": 495.0,
+  "regime": "negative",
+  "source": "daily_gex",
+  "as_of": "2026-10-15T20:00:00+00:00",
+  "stale": true
+}

@@ -47,5 +47,11 @@ def write_dry_run_html(trading_date: str, html: str) -> Path:
     return path
 
 
+def write_orbis_html(trading_date: str, html: str) -> Path:
+    path = data_dir() / f"orbis_brief_{trading_date}.html"
+    path.write_text(html, encoding="utf-8")
+    return path
+
+
 def export_payload_debug(payload: BriefPayload) -> str:
     return json.dumps(payload.model_dump(mode="json"), indent=2, ensure_ascii=False)
