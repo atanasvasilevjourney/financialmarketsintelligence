@@ -1,0 +1,73 @@
+# Regime scoring: each signal maps to risk_on (+1), neutral (0), or risk_off (-1).
+# Final sum -> label via sum_to_regime bands below.
+
+signals:
+  vix:
+    # Lower VIX -> more risk-on
+    risk_on_max: 16.0
+    neutral_max: 22.0
+    caution_max: 28.0
+    # above caution_max -> risk_off
+
+  vix_term_ratio:
+    # VIX / VIX3M; backwardation (ratio > 1) is stress
+    risk_on_max: 0.92
+    neutral_max: 1.0
+    caution_max: 1.08
+
+  hy_oas_zscore_252d:
+    # FRED ICE BofA HY OAS vs 252d history
+    risk_on_max: -0.5
+    neutral_max: 0.5
+    caution_max: 1.5
+
+  yield_curve_10y2y:
+    # T10Y2Y spread (%)
+    risk_on_min: 0.25
+    neutral_min: 0.0
+    caution_min: -0.25
+
+  spx_vs_50dma:
+    # % above/below 50 DMA
+    risk_on_min: 1.0
+    neutral_min: -1.0
+    caution_min: -3.0
+
+  spx_vs_200dma:
+    risk_on_min: 2.0
+    neutral_min: -2.0
+    caution_min: -5.0
+
+  sector_breadth:
+    # fraction of sector ETFs above 50 DMA (0-1)
+    risk_on_min: 0.65
+    neutral_min: 0.45
+    caution_min: 0.30
+
+  rsp_spy_20d:
+    # RSP/SPY 20d relative return (%)
+    risk_on_min: 0.5
+    neutral_min: -0.5
+    caution_min: -1.5
+
+sum_to_regime:
+  risk_on_min: 4
+  neutral_min: 1
+  caution_min: -2
+  # below caution_min -> RISK_OFF
+
+exposure_ceiling_pct:
+  RISK_ON: 100
+  NEUTRAL: 75
+  CAUTION: 50
+  RISK_OFF: 25
+  INSUFFICIENT_DATA: 0
+
+max_missing_inputs: 2
+
+stale_after_minutes:
+  # Daily brief at ~07:35 ET uses prior session EOD prints (yfinance).
+  markets: 2880
+  fred: 1440
+  sectors: 2880
+  calendar: 360

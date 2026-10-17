@@ -1,0 +1,4 @@
+# Static / curated events (Phase 1). Live macro calendar adapter is TODO.
+# Times are ISO8601 UTC; display layer converts to America/New_York and Europe/Sofia.
+
+events: []
