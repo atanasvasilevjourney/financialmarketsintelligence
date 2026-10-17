@@ -1,0 +1,7 @@
+{
+  "hy_oas": {"value": 3.25, "as_of": "2026-10-15T00:00:00+00:00"},
+  "hy_oas_zscore_252d": {"value": 0.1, "as_of": "2026-10-15T00:00:00+00:00"},
+  "yield_curve_10y2y": {"value": 0.15, "as_of": "2026-10-15T00:00:00+00:00"},
+  "stale_after_minutes": 1440,
+  "source": "fred-fixture"
+}
