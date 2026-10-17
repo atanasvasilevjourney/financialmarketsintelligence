@@ -71,3 +71,5 @@ stale_after_minutes:
   fred: 1440
   sectors: 2880
   calendar: 360
+  gex_orbis: 60
+  technicals: 120

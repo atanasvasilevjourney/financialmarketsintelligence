@@ -17,12 +17,26 @@ def _load(name: str) -> dict:
     return data
 
 
+def _load_gex() -> dict:
+    data = json.loads((FIXTURES / "gex.json").read_text(encoding="utf-8"))
+    as_of = datetime.fromisoformat(data["as_of"])
+    data["as_of"] = as_of
+    for sym in data.get("symbols", {}).values():
+        if isinstance(sym.get("as_of"), str):
+            sym["as_of"] = datetime.fromisoformat(sym["as_of"])
+        for _key, val in list(sym.items()):
+            if isinstance(val, dict) and isinstance(val.get("as_of"), str):
+                val["as_of"] = datetime.fromisoformat(val["as_of"])
+    return data
+
+
 @pytest.fixture
 def fixture_inject() -> dict[str, dict]:
     return {
         "markets": _load("markets.json"),
         "fred": _load("fred.json"),
         "sectors": _load("sectors.json"),
+        "gex": _load_gex(),
         "calendar": {
             "events": [],
             "stale_after_minutes": 360,

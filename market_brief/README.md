@@ -48,6 +48,7 @@ Flags:
 - `--no-llm` — template commentary (CI default)
 - `--force` — ignore per-day idempotency marker
 - `--skip-window-check` — bypass 07:30–08:30 America/New_York scheduler guard
+- `--orbis-html` — write ORBIS-branded mobile HTML snapshot (+ Telegram summary when delivering)
 
 ## Collectors
 
@@ -56,7 +57,8 @@ Flags:
 | `collectors/markets.py` | yfinance | VIX, VIX3M, SPX, 50/200 DMA distances |
 | `collectors/fred.py` | FRED API | HY OAS + 252d z-score, T10Y2Y |
 | `collectors/sectors.py` | yfinance | Sector ETF breadth, RSP/SPY 20d relative |
-| `collectors/calendar.py` | `config/events.yaml` | **TODO Phase 2:** live macro calendar adapter |
+| `collectors/calendar.py` | `config/events.yaml` | Curated events; live macro calendar → Phase 2 TODO |
+| `collectors/gex_orbis.py` | ORBIS sidecar HTTP | SPY/QQQ → SPX/NDX GEX block |
 
 ### Adding a collector
 
@@ -87,10 +89,48 @@ Private repos disable scheduled workflows after ~60 days of repository inactivit
 
 Dual crons in `.github/workflows/brief.yml` cover EST and EDT for ~07:35 New York.
 
-## Phase 2 extension points
+## Phase 2 (ORBIS GEX scaffold)
 
-- Live macro calendar collector (replace/augment `events.yaml`)
-- GEX / put-call / dealer positioning modules
+Phase 2 adds an ORBIS-branded mobile HTML path and a thin HTTP collector to the existing sidecar — **not** a full GEX reimplementation or backtest.
+
+### ORBIS sidecar collector
+
+| Module | Source | Notes |
+|--------|--------|-------|
+| `collectors/gex_orbis.py` | `ORBIS_SIDECAR_URL` (default `https://orbis-gex.onrender.com`) | `GET /daily/SPY/latest` and `/daily/QQQ/latest`, mapped to **SPX** / **NDX** labels in payload + HTML |
+
+Set `ORBIS_SIDECAR_URL` in CI/production; tests inject `tests/fixtures/gex.json` (no network).
+
+### ORBIS HTML render
+
+| Module | Role |
+|--------|------|
+| `render/orbis_html.py` | Mobile HTML aligned with ORBIS Daily Brief UI spec — **all numbers from `BriefPayload` only** |
+| `render/market_html.py` | Phase 1 Telegram HTML (unchanged behaviour) |
+
+Run with:
+
+```bash
+python -m brief run --dry-run --no-llm --skip-window-check --orbis-html
+```
+
+Writes `data/orbis_brief_{trade_date}.html`. With Telegram delivery, `--orbis-html` sends a **short summary** plus path/link (`ORBIS_HTML_PUBLIC_URL` optional).
+
+Extended payload fields: `gex_symbols`, `exposure_footer`, `technicals_es` (placeholders OK as `MISSING`), `kpi_strip` (ES/NQ/P/C TODO).
+
+### Phase 2 TODO (not in this scaffold)
+
+- Global overnight index table collector
+- High-impact earnings (after-hours) adapter
+- Equity put/call ratio collector
+- NYSE / custom breadth CSV feed
+- Live macro calendar (replace `events.yaml` only)
+- VOLATILITY / MACRO / SIGNAL narrative cards (separate LLM sections; Phase 1 single narrative block)
+- Full parity with `orbis_gex` `brief-template.html` (hosted static deploy)
+- Regime / GEX historical backtest
+
+## Phase 3+ ideas
+
 - Web UI and historical backtest of regime labels
 - Richer breadth (NYSE % above MA) via a licensed feed
 

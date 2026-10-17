@@ -17,6 +17,7 @@ def test_cmd_run_dry_run(monkeypatch, tmp_path, fixture_inject, fixed_now) -> No
         force=False,
         deliver="none",
         skip_window_check=True,
+        orbis_html=False,
     )
     from brief import cli, pipeline
 
