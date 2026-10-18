@@ -8,6 +8,19 @@ from brief.models import BriefPayload, NarrativeBlock, NarrativeJSON
 from brief.validate import validate_narrative_against_payload
 
 
+def alignment_summary_stub(payload: BriefPayload) -> str:
+    """Deterministic desk vs ORBIS alignment line (no LLM)."""
+    if not payload.desk_context:
+        return "Desk alignment: no curated sources in config/desk_sources.yaml."
+    names = ", ".join(d.source_id for d in payload.desk_context[:3])
+    regime = payload.regime.label.value
+    gex = "GEX OK" if payload.gex_symbols else "GEX MISSING"
+    return (
+        f"Desk alignment ({names}): themes vs our regime {regime} "
+        f"({payload.regime.exposure_ceiling_pct}% ceiling); {gex}."
+    )
+
+
 def template_narrative(payload: BriefPayload, lang: str) -> NarrativeBlock:
     r = payload.regime.label.value
     if lang == "bg":
@@ -20,6 +33,8 @@ def template_narrative(payload: BriefPayload, lang: str) -> NarrativeBlock:
             bullets.append(f"Липсващи входове: {', '.join(payload.regime.inputs_missing)}")
         if payload.degraded:
             bullets.append("Частични данни — проверете STALE/MISSING полета.")
+        if payload.alignment_summary:
+            bullets.append(payload.alignment_summary)
     else:
         headline = f"Market regime: {r}"
         bullets = [
@@ -30,6 +45,8 @@ def template_narrative(payload: BriefPayload, lang: str) -> NarrativeBlock:
             bullets.append(f"Missing inputs: {', '.join(payload.regime.inputs_missing)}")
         if payload.degraded:
             bullets.append("Degraded data — review STALE/MISSING fields.")
+        if payload.alignment_summary:
+            bullets.append(payload.alignment_summary)
     return NarrativeBlock(headline=headline, bullets=bullets, tone="neutral", lang=lang)
 
 

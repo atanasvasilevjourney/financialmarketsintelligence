@@ -4,14 +4,30 @@ import os
 from datetime import UTC, datetime
 from typing import Any
 
+import httpx
+
 from brief.collectors.base import BaseCollector, CollectorError
 
 DEFAULT_SIDECAR_URL = "https://orbis-gex.onrender.com"
+DEFAULT_SIDECAR_TIMEOUT_SEC = 90.0
 UPSTREAM_SYMBOLS = ("SPY", "QQQ")
 
 
 def sidecar_base_url() -> str:
     return os.environ.get("ORBIS_SIDECAR_URL", DEFAULT_SIDECAR_URL).rstrip("/")
+
+
+def sidecar_timeout_sec() -> float:
+    raw = os.environ.get("ORBIS_SIDECAR_TIMEOUT_SEC", str(int(DEFAULT_SIDECAR_TIMEOUT_SEC)))
+    try:
+        return max(5.0, float(raw))
+    except ValueError:
+        return DEFAULT_SIDECAR_TIMEOUT_SEC
+
+
+def sidecar_warmup_enabled() -> bool:
+    raw = os.environ.get("ORBIS_SIDECAR_WARMUP", "1").strip().lower()
+    return raw not in ("0", "false", "no", "off")
 
 
 def _parse_as_of(raw: object) -> datetime | None:
@@ -57,11 +73,26 @@ class GexOrbisCollector(BaseCollector):
     name = "gex_orbis"
 
     def __init__(self, stale_after_minutes: int = 60, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
+        client = kwargs.pop("client", None)
+        if client is None:
+            client = httpx.Client(timeout=sidecar_timeout_sec())
+        super().__init__(client=client)
         self.stale_after_minutes = stale_after_minutes
+
+    def _warmup_health(self, base: str) -> None:
+        if not sidecar_warmup_enabled():
+            return
+        url = f"{base}/health"
+        try:
+            resp = self.client.get(url)
+            if resp.status_code >= 400:
+                return
+        except httpx.HTTPError:
+            return
 
     def collect(self) -> dict[str, Any]:
         base = sidecar_base_url()
+        self._warmup_health(base)
         symbols: dict[str, dict[str, Any]] = {}
         latest_as_of: datetime | None = None
         for sym in UPSTREAM_SYMBOLS:

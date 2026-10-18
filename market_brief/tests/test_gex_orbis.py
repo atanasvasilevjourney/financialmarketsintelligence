@@ -35,7 +35,12 @@ def test_gex_collector_from_fixture_responses() -> None:
     spy_body = json.loads((FIXTURES / "sidecar_spy.json").read_text(encoding="utf-8"))
     qqq_body = json.loads((FIXTURES / "sidecar_qqq.json").read_text(encoding="utf-8"))
 
+    health_hits: list[str] = []
+
     def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("/health"):
+            health_hits.append("health")
+            return httpx.Response(200, json={"ok": True})
         if request.url.path.endswith("/daily/SPY/latest"):
             return httpx.Response(200, json=spy_body)
         if request.url.path.endswith("/daily/QQQ/latest"):
@@ -46,6 +51,7 @@ def test_gex_collector_from_fixture_responses() -> None:
     client = httpx.Client(transport=transport, base_url="https://orbis-gex.onrender.com")
     with GexOrbisCollector(client=client) as col:
         data = col.collect()
+    assert health_hits == ["health"]
     assert "SPY" in data["symbols"]
     assert data["symbols"]["SPY"]["net"]["value"] == 1250000000.0
 

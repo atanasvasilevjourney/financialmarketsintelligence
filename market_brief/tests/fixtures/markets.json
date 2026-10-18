@@ -5,6 +5,8 @@
   "spx": {"value": 5800.0, "as_of": "2026-10-16T20:00:00+00:00"},
   "spx_vs_50dma_pct": {"value": 2.5, "as_of": "2026-10-16T20:00:00+00:00"},
   "spx_vs_200dma_pct": {"value": 8.0, "as_of": "2026-10-16T20:00:00+00:00"},
+  "es_future": {"value": 5812.5, "as_of": "2026-10-16T20:00:00+00:00"},
+  "nq_future": {"value": 20450.0, "as_of": "2026-10-16T20:00:00+00:00"},
   "stale_after_minutes": 120,
   "source": "yfinance-fixture"
 }

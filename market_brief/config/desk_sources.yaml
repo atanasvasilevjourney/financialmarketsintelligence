@@ -1,0 +1,12 @@
+# Curated external desk frameworks (Layer 2). Themes + links only — never ingest their numbers as Datapoints.
+sources:
+  - id: paralia
+    title: Paralia Trading Desk
+    url: https://paraliatradingdesk.substack.com/
+    cadence: weekly
+    themes: [inflation, rotation, ai_credit, oil]
+  - id: stochvol_opex
+    title: StochVolTrader — OpEx mechanics
+    url: https://stochvoltrader.substack.com/
+    cadence: event
+    themes: [vanna, charm, lambda_g, liquidity_profile]

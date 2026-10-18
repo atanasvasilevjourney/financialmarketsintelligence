@@ -25,3 +25,7 @@ def test_orbis_html_smoke(fixture_inject: dict, fixed_now) -> None:  # type: ign
     assert "+1.25B" in html or "1.25B" in html
     assert "580" in html
     assert "9999" not in html and "12345" not in html
+    assert "INDEX OpEx TODAY" in html
+    assert "DESK CONTEXT" in html
+    assert "sector-bars" in html
+    assert "5812" in html or "5,812" in html

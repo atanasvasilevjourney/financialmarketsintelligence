@@ -11,6 +11,8 @@ TICKERS = {
     "vix": "^VIX",
     "vix3m": "^VIX3M",
     "spx": "^GSPC",
+    "es_future": "ES=F",
+    "nq_future": "NQ=F",
 }
 
 
@@ -56,6 +58,8 @@ class MarketsCollector(BaseCollector):
         vs200, vs200_as_of = _dma_pct(TICKERS["spx"], 200)
         ratio = vix / vix3m if vix3m else None
         ratio_as_of = max(vix_as_of, vix3m_as_of)
+        es_val, es_as_of = _last_close(TICKERS["es_future"])
+        nq_val, nq_as_of = _last_close(TICKERS["nq_future"])
         return {
             "vix": {"value": vix, "as_of": vix_as_of},
             "vix3m": {"value": vix3m, "as_of": vix3m_as_of},
@@ -63,6 +67,8 @@ class MarketsCollector(BaseCollector):
             "spx": {"value": spx, "as_of": spx_as_of},
             "spx_vs_50dma_pct": {"value": vs50, "as_of": vs50_as_of},
             "spx_vs_200dma_pct": {"value": vs200, "as_of": vs200_as_of},
+            "es_future": {"value": es_val, "as_of": es_as_of},
+            "nq_future": {"value": nq_val, "as_of": nq_as_of},
             "stale_after_minutes": self.stale_after_minutes,
             "source": "yfinance",
         }
