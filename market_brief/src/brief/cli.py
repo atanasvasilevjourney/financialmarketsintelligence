@@ -37,7 +37,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--deliver",
         choices=("auto", "telegram", "discord", "none"),
         default="auto",
-        help="Delivery channel (auto=telegram if configured)",
+        help=(
+            "Delivery channel: auto=Telegram then Discord when each is configured; "
+            "Discord-only if Telegram unset"
+        ),
     )
     run.add_argument(
         "--skip-window-check",
@@ -97,25 +100,36 @@ def cmd_run(args: argparse.Namespace) -> int:
         return 0
 
     deliver = args.deliver
-    if deliver == "auto":
-        deliver = "telegram" if telegram_configured() else "none"
+    deliver_html = html
+    if args.orbis_html and orbis_path:
+        deliver_html = telegram_orbis_summary(payload, html_path=str(orbis_path))
 
     try:
-        if deliver == "telegram":
+        if deliver == "auto":
+            if not telegram_configured() and not discord_configured():
+                logger.error(
+                    "No delivery channel configured (TELEGRAM_* and/or DISCORD_WEBHOOK_URL)"
+                )
+                return 1
+            if telegram_configured():
+                send_telegram_html(deliver_html)
+            if discord_configured():
+                send_discord(deliver_html)
+        elif deliver == "telegram":
             if not telegram_configured():
                 logger.error("Telegram not configured")
                 return 1
-            if args.orbis_html and orbis_path:
-                send_telegram_html(
-                    telegram_orbis_summary(payload, html_path=str(orbis_path))
-                )
-            else:
-                send_telegram_html(html)
+            send_telegram_html(deliver_html)
         elif deliver == "discord":
             if not discord_configured():
                 logger.error("Discord not configured")
                 return 1
-            send_discord(html)
+            send_discord(deliver_html)
+        elif deliver == "none":
+            logger.info("Delivery skipped (--deliver none)")
+            ping_success()
+            print(html)
+            return 0
         mark_sent(td)
         ping_success()
     except Exception:

@@ -35,6 +35,8 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
               f.write(f"run={'true' if ok else 'false'}\n")
           PY
+      # Repository secrets: FRED_API_KEY; TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID;
+      # optional DISCORD_WEBHOOK_URL, ANTHROPIC_API_KEY, HEALTHCHECK_URL
       - name: Run brief
         if: steps.window.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
         run: python -m brief run --no-llm --skip-window-check

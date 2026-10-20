@@ -27,13 +27,23 @@ cp .env.example .env   # fill secrets locally; never commit .env
 | `ANTHROPIC_API_KEY` | Optional | LLM commentary (skip with `--no-llm`) |
 | `BRIEF_LANG` | Optional | Default `bg` |
 | `BRIEF_MODEL` | Optional | Anthropic model id |
-| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | Live Telegram | Acceptance criterion #2 |
-| `DISCORD_WEBHOOK_URL` | Optional | Discord delivery |
+| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | Live Telegram | Primary delivery (`--deliver auto` sends here first when set) |
+| `DISCORD_WEBHOOK_URL` | Optional | Discord webhook delivery (see below) |
 | `HEALTHCHECK_URL` | Optional | [Healthchecks.io](https://healthchecks.io) fail/success pings |
 | `BRIEF_DATA_DIR` | Optional | Snapshots & idempotency markers (default `./data`) |
 | `ORBIS_SIDECAR_URL` | Optional | ORBIS GEX HTTP sidecar base URL |
 | `ORBIS_SIDECAR_TIMEOUT_SEC` | Optional | Sidecar HTTP timeout (default **90**; use on cold Render / OpEx days) |
 | `ORBIS_SIDECAR_WARMUP` | Optional | `1` = best-effort `GET /health` before daily GEX fetch (default on) |
+
+### Discord webhook (optional)
+
+1. In Discord: **Server Settings → Integrations → Webhooks → New Webhook** (pick the target text channel).
+2. Copy the webhook URL into `DISCORD_WEBHOOK_URL` (local `.env` or GitHub Actions secret).
+3. With `--deliver auto` (default), the brief posts to **Telegram first** (if `TELEGRAM_*` is set), then to **Discord** (if the webhook is set). Telegram-only, Discord-only, or both are supported.
+4. **Message length:** Discord webhooks allow up to **2000** characters per message; the client splits longer briefs into multiple webhook posts (~1900 chars each).
+5. **Forum channels:** create the webhook on a **text channel** inside the forum, or on a regular announcement channel; forum *posts* are not created automatically—content lands in the channel tied to the webhook.
+
+Explicit delivery: `--deliver discord` (Discord only), `--deliver telegram`, `--deliver none`.
 
 ## Run
 
@@ -47,7 +57,7 @@ python -m brief run --skip-window-check
 
 Flags:
 
-- `--dry-run` — write HTML + JSON snapshot, no Telegram/Discord
+- `--dry-run` — write HTML + JSON snapshot; **no** Telegram/Discord posts (no webhook traffic)
 - `--no-llm` — template commentary (CI default)
 - `--force` — ignore per-day idempotency marker
 - `--skip-window-check` — bypass 07:30–08:30 America/New_York scheduler guard
@@ -83,7 +93,7 @@ Reads `config/thresholds.yaml`. Signals map to scores `{-1,0,+1}`; sum maps to `
 - FRED HY OAS may lag; `stale_after_minutes.fred` defaults to 1440.
 - Economic calendar is curated YAML only until a vetted live source is integrated.
 - LLM model id defaults to `claude-sonnet-4-20250514` (override via `BRIEF_MODEL`); spec target Sonnet 5.5 when available in API.
-- Scheduled GitHub Actions cannot receive Telegram without repository secrets — **criterion #2 requires you to add `TELEGRAM_*` secrets**; the workflow will not DM you until then.
+- Scheduled GitHub Actions needs repository secrets for delivery: at minimum **`FRED_API_KEY`**; for messaging add **`TELEGRAM_*`** and/or **`DISCORD_WEBHOOK_URL`** (see `.github/workflows/brief.yml`).
 
 ## GitHub Actions keepalive
 
