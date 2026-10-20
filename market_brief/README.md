@@ -31,6 +31,9 @@ cp .env.example .env   # fill secrets locally; never commit .env
 | `DISCORD_WEBHOOK_URL` | Optional | Discord delivery |
 | `HEALTHCHECK_URL` | Optional | [Healthchecks.io](https://healthchecks.io) fail/success pings |
 | `BRIEF_DATA_DIR` | Optional | Snapshots & idempotency markers (default `./data`) |
+| `ORBIS_SIDECAR_URL` | Optional | ORBIS GEX HTTP sidecar base URL |
+| `ORBIS_SIDECAR_TIMEOUT_SEC` | Optional | Sidecar HTTP timeout (default **90**; use on cold Render / OpEx days) |
+| `ORBIS_SIDECAR_WARMUP` | Optional | `1` = best-effort `GET /health` before daily GEX fetch (default on) |
 
 ## Run
 
@@ -58,7 +61,10 @@ Flags:
 | `collectors/fred.py` | FRED API | HY OAS + 252d z-score, T10Y2Y |
 | `collectors/sectors.py` | yfinance | Sector ETF breadth, RSP/SPY 20d relative |
 | `collectors/calendar.py` | `config/events.yaml` | Curated events; live macro calendar → Phase 2 TODO |
-| `collectors/gex_orbis.py` | ORBIS sidecar HTTP | SPY/QQQ → SPX/NDX GEX block |
+| `collectors/gex_orbis.py` | ORBIS sidecar HTTP | Warm-up `/health`, `ORBIS_SIDECAR_TIMEOUT_SEC` (default 90s), SPY/QQQ → SPX/NDX |
+| `collectors/markets.py` | yfinance | Adds **ES=F / NQ=F** for KPI strip |
+| `config/desk_sources.yaml` | Curated YAML | Desk themes + URLs → `desk_context[]` (no scraped numbers) |
+| `opex_calendar.py` | Heuristic | Monthly index OpEx badge (third Friday; NYSE weekdays) |
 
 ### Adding a collector
 
@@ -116,7 +122,11 @@ python -m brief run --dry-run --no-llm --skip-window-check --orbis-html
 
 Writes `data/orbis_brief_{trade_date}.html`. With Telegram delivery, `--orbis-html` sends a **short summary** plus path/link (`ORBIS_HTML_PUBLIC_URL` optional).
 
-Extended payload fields: `gex_symbols`, `exposure_footer`, `technicals_es` (placeholders OK as `MISSING`), `kpi_strip` (ES/NQ/P/C TODO).
+Extended payload fields: `gex_symbols`, `exposure_footer`, `technicals_es` (placeholders OK as `MISSING`), `kpi_strip` (ES/NQ from futures; equity P/C TODO), `opex_badge`, `opex_flow` stub, `desk_context`, `alignment_summary`.
+
+### Where the brief publishes
+
+See project docs `brief-publication-channels.md`: **Telegram primary**, optional Discord, HTML snapshot on disk/runner — **not** a public website unless you host the HTML yourself.
 
 ### Phase 2 TODO (not in this scaffold)
 

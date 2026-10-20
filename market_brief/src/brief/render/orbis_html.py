@@ -140,6 +140,17 @@ td.num { text-align:right; font-variant-numeric:tabular-nums; }
 .degraded { background:#3d1f1f; color:#ffb4b4; padding:8px 12px; border-radius:8px;
   font-size:.85rem; margin:10px 0; }
 .provenance { color:var(--muted); font-size:.72rem; margin-top:16px; }
+.sector-bars { margin-top:10px; }
+.bar-row { display:flex; align-items:center; gap:8px; margin:4px 0; font-size:.78rem; }
+.bar-row .sym { width:36px; color:var(--muted); }
+.bar-track { flex:1; height:8px; background:#1e2836; border-radius:4px; position:relative; }
+.bar-fill { height:100%; border-radius:4px; position:absolute; top:0; max-width:50%; }
+.bar-fill.up { background:var(--macro); left:50%; }
+.bar-fill.down { background:#e74c3c; right:50%; }
+.bar-pct { width:52px; text-align:right; font-variant-numeric:tabular-nums; }
+.desk-item { font-size:.85rem; margin:8px 0; padding:8px; background:#0f141c; border-radius:8px; }
+.opex-badge { display:inline-block; background:#2a1f4a; color:#c9b8ff; padding:4px 10px;
+  border-radius:999px; font-size:.72rem; letter-spacing:.08em; margin:8px 0; }
 """
     )
     parts.append("</style></head><body><div class=\"wrap\">")
@@ -267,6 +278,11 @@ td.num { text-align:right; font-variant-numeric:tabular-nums; }
         parts.append("</table>")
     parts.append("</section>")
 
+    if payload.opex_flow and payload.opex_badge and payload.opex_badge.show_opex_block:
+        parts.append("<section><h2>OpEx FLOW</h2>")
+        parts.append(f"<p>{_esc(payload.opex_flow.note)} [{payload.opex_flow.status.value}]</p>")
+        parts.append("</section>")
+
     parts.append("<section><h2>SECTOR ROTATION · DAILY</h2>")
     parts.append(
         f"<p>Breadth {_fmt_pct(snap.sector_breadth)} · "
@@ -278,11 +294,59 @@ td.num { text-align:right; font-variant-numeric:tabular-nums; }
             above = "yes" if dp.meta.get("above_50dma") else "no"
             parts.append(f"<tr><td>{sym}</td><td class=\"num\">{above} [{dp.status.value}]</td></tr>")
         parts.append("</table>")
+        parts.append('<div class="sector-bars">')
+        max_abs = 0.0
+        for dp in snap.sector_details.values():
+            ch = dp.meta.get("session_change_pct")
+            if isinstance(ch, (int, float)):
+                max_abs = max(max_abs, abs(float(ch)))
+        scale = max(max_abs, 0.01)
+        for sym, dp in sorted(snap.sector_details.items()):
+            ch = dp.meta.get("session_change_pct")
+            if not isinstance(ch, (int, float)):
+                continue
+            pct = float(ch)
+            width = min(50.0, abs(pct) / scale * 50.0)
+            css = "up" if pct >= 0 else "down"
+            parts.append('<div class="bar-row">')
+            parts.append(f'<span class="sym">{_esc(sym)}</span>')
+            parts.append('<div class="bar-track">')
+            parts.append(
+                f'<div class="bar-fill {css}" style="width:{width:.1f}%;"></div>'
+            )
+            parts.append("</div>")
+            parts.append(f'<span class="bar-pct">{_esc(f"{pct:+.2f}%")}</span>')
+            parts.append("</div>")
+        parts.append("</div>")
     else:
-        parts.append("<p>Sector detail table TODO (per-ETF session % bars)</p>")
+        parts.append("<p>No sector ETF detail in payload</p>")
     parts.append("</section>")
 
+    if payload.desk_context or payload.alignment_summary:
+        parts.append("<section><h2>DESK CONTEXT</h2>")
+        if payload.alignment_summary:
+            parts.append(f"<p>{_esc(payload.alignment_summary)}</p>")
+        for desk in payload.desk_context:
+            parts.append('<div class="desk-item">')
+            parts.append(
+                f"<strong>{_esc(desk.title)}</strong> "
+                f"<span class=\"muted\">({_esc(desk.source_id)})</span>"
+            )
+            if desk.url:
+                parts.append(f'<br/><a href="{_esc(desk.url)}">{_esc(desk.url)}</a>')
+            if desk.themes:
+                parts.append(f"<p>Themes: {_esc(', '.join(desk.themes))}</p>")
+            if desk.alignment:
+                parts.append(f"<p>Alignment: {_esc(desk.alignment)}</p>")
+            parts.append("</div>")
+        parts.append("</section>")
+
     parts.append("<section><h2>CALENDAR</h2>")
+    if payload.opex_badge and payload.opex_badge.badge:
+        parts.append(
+            f'<div class="opex-badge">{_esc(payload.opex_badge.badge)} '
+            f"({_esc(payload.opex_badge.monthly_opex_date)})</div>"
+        )
     if not payload.calendar:
         parts.append("<p>No curated events (live macro calendar TODO)</p>")
     else:

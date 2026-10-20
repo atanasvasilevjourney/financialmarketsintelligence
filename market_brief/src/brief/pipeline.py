@@ -11,6 +11,7 @@ from brief.collectors.fred import FredCollector
 from brief.collectors.gex_orbis import GexOrbisCollector
 from brief.collectors.markets import MarketsCollector
 from brief.collectors.sectors import SectorsCollector
+from brief.desk_context import enrich_desk_alignment, load_desk_sources
 from brief.models import (
     GEX_DISPLAY_MAP,
     BriefPayload,
@@ -23,10 +24,12 @@ from brief.models import (
     KpiStrip,
     MarketSnapshot,
     NarrativeBlock,
+    OpexFlowStub,
     RegimeLabel,
     RegimeResult,
 )
-from brief.narrative import generate_narrative
+from brief.narrative import alignment_summary_stub, generate_narrative
+from brief.opex_calendar import opex_badge_for
 from brief.regime import compute_regime, load_thresholds
 from brief.render import render_html
 from brief.validate import point_from_raw
@@ -112,6 +115,35 @@ def _build_snapshot(
         errors.append("fred collector failed")
     if sectors is None:
         errors.append("sectors collector failed")
+    sector_details: dict[str, DataPoint] = {}
+    if sectors and sectors.get("sector_details"):
+        stale_sectors = int(stale_cfg.get("sectors", 120))
+        src = str(sectors.get("source", "yfinance"))
+        for sym, detail in sectors["sector_details"].items():
+            if not isinstance(detail, dict):
+                continue
+            price = detail.get("price")
+            as_of = detail.get("as_of")
+            if isinstance(as_of, str):
+                as_of = datetime.fromisoformat(as_of.replace("Z", "+00:00"))
+            if not isinstance(as_of, datetime):
+                as_of = None
+            val = float(price) if isinstance(price, (int, float)) else None
+            dp = DataPoint(
+                label=str(sym),
+                value=val,
+                as_of=as_of,
+                source=src,
+                stale_after_minutes=stale_sectors,
+                status=DataStatus.OK if val is not None else DataStatus.MISSING,
+                meta={
+                    "above_50dma": bool(detail.get("above_50dma")),
+                    "session_change_pct": detail.get("session_change_pct"),
+                },
+            )
+            dp.status = dp.effective_status(now)
+            sector_details[str(sym)] = dp
+    snap = snap.model_copy(update={"sector_details": sector_details})
     return snap, errors
 
 
@@ -243,13 +275,41 @@ def _build_technicals_placeholder(stale_minutes: int) -> EsTechnicals:
     )
 
 
-def _build_kpi_strip(snapshot: MarketSnapshot, stale_minutes: int) -> KpiStrip:
-    todo = "futures_pc_todo"
+def _build_kpi_strip(
+    snapshot: MarketSnapshot,
+    markets: dict[str, Any] | None,
+    *,
+    now: datetime,
+    stale_minutes: int,
+) -> KpiStrip:
+    todo = "equity_pc_todo"
+    es = _point("es_future", markets, "es_future", stale_minutes, now)
+    nq = _point("nq_future", markets, "nq_future", stale_minutes, now)
+    if es.status == DataStatus.MISSING:
+        es = _missing_point("ES futures", "yfinance", stale_minutes)
+    else:
+        es.label = "ES"
+    if nq.status == DataStatus.MISSING:
+        nq = _missing_point("NQ futures", "yfinance", stale_minutes)
+    else:
+        nq.label = "NQ"
     return KpiStrip(
-        es=_missing_point("ES futures", todo, stale_minutes),
-        nq=_missing_point("NQ futures", todo, stale_minutes),
+        es=es,
+        nq=nq,
         vix=snapshot.vix,
         put_call=_missing_point("Equity P/C", todo, stale_minutes),
+    )
+
+
+def _build_opex_flow_stub(*, show_block: bool) -> OpexFlowStub:
+    if not show_block:
+        return OpexFlowStub(
+            status=DataStatus.MISSING,
+            note="OpEx block inactive (outside T-1/T0/T+1 window)",
+        )
+    return OpexFlowStub(
+        status=DataStatus.MISSING,
+        note="Sidecar v2 shadow γ / λG / charm not wired — net GEX only",
     )
 
 
@@ -349,13 +409,18 @@ def build_brief(
     if calendar and calendar.get("events"):
         for ev in calendar["events"]:
             events.append(CalendarEvent.model_validate(ev))
+    td_date = datetime.fromisoformat(td).date()
+    opex_badge = opex_badge_for(td_date)
     gex_stale = int(stale_cfg.get("gex_orbis", 60))
     if gex is None:
         all_errors = all_errors + ["gex: collector failed"]
     gex_symbols = _build_gex_symbols(gex, now=now, stale_minutes=gex_stale)
     exposure_footer = _build_exposure_footer(regime)
     technicals_es = _build_technicals_placeholder(int(stale_cfg.get("technicals", 120)))
-    kpi_strip = _build_kpi_strip(snapshot, int(stale_cfg.get("markets", 120)))
+    market_stale = int(stale_cfg.get("markets", 120))
+    kpi_strip = _build_kpi_strip(snapshot, markets, now=now, stale_minutes=market_stale)
+    desk_raw = load_desk_sources()
+    opex_flow = _build_opex_flow_stub(show_block=opex_badge.show_opex_block)
     degraded = bool(all_errors) or len(regime.inputs_missing) > 0
     payload = BriefPayload(
         trading_date=td,
@@ -370,9 +435,18 @@ def build_brief(
         exposure_footer=exposure_footer,
         technicals_es=technicals_es,
         kpi_strip=kpi_strip,
+        opex_badge=opex_badge,
+        opex_flow=opex_flow,
+        desk_context=desk_raw,
     )
     payload = payload.model_copy(
-        update={"narrative": generate_narrative(payload, use_llm=use_llm)}
+        update={"desk_context": enrich_desk_alignment(payload.desk_context, payload)}
+    )
+    payload = payload.model_copy(
+        update={
+            "alignment_summary": alignment_summary_stub(payload),
+            "narrative": generate_narrative(payload, use_llm=use_llm),
+        }
     )
     html = render_html(payload)
     return payload, html

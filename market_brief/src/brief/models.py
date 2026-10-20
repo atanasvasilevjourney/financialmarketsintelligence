@@ -121,6 +121,36 @@ class CalendarEvent(BaseModel):
     source: str = "events.yaml"
 
 
+class OpexBadge(BaseModel):
+    """Monthly index OpEx proximity badge (third-Friday heuristic)."""
+
+    monthly_opex_date: str
+    badge: str = ""
+    session_offset: int | None = None
+    show_opex_block: bool = False
+    rule: str = "spx_monthly_third_friday_nyse_weekdays"
+
+
+class OpexFlowStub(BaseModel):
+    """Placeholder until ORBIS sidecar v2 greek surface is wired."""
+
+    status: DataStatus = DataStatus.MISSING
+    note: str = "Sidecar v2 shadow γ / λG / charm not wired — net GEX only"
+    lambda_g: DataPoint | None = None
+    charm: DataPoint | None = None
+
+
+class DeskContextEntry(BaseModel):
+    source_id: str
+    title: str
+    url: str
+    cadence: str
+    themes: list[str] = Field(default_factory=list)
+    alignment: str | None = None
+    tension: str | None = None
+    our_edge: str | None = None
+
+
 class NarrativeBlock(BaseModel):
     headline: str
     bullets: list[str]
@@ -141,6 +171,10 @@ class BriefPayload(BaseModel):
     exposure_footer: ExposureFooter | None = None
     technicals_es: EsTechnicals | None = None
     kpi_strip: KpiStrip | None = None
+    opex_badge: OpexBadge | None = None
+    opex_flow: OpexFlowStub | None = None
+    desk_context: list[DeskContextEntry] = Field(default_factory=list)
+    alignment_summary: str | None = None
 
 
 class NarrativeJSON(BaseModel):

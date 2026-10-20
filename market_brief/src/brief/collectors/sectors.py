@@ -22,18 +22,21 @@ SECTOR_ETFS = [
 ]
 
 
-def _above_50dma(symbol: str) -> tuple[bool, float | None, datetime | None]:
+def _above_50dma(symbol: str) -> tuple[bool, float | None, float | None, datetime | None]:
     hist = yf.Ticker(symbol).history(period="120d", interval="1d")
     if len(hist) < 55:
-        return False, None, None
+        return False, None, None, None
     closes = hist["Close"]
     dma50 = closes.rolling(50).mean().iloc[-1]
     last = closes.iloc[-1]
+    session_pct: float | None = None
+    if len(closes) >= 2 and closes.iloc[-2]:
+        session_pct = (float(last) / float(closes.iloc[-2]) - 1.0) * 100.0
     ts = hist.index[-1]
     if ts.tzinfo is None:
         ts = ts.tz_localize("America/New_York")
     as_of = ts.astimezone(UTC).to_pydatetime()
-    return bool(last >= dma50), float(last), as_of
+    return bool(last >= dma50), float(last), session_pct, as_of
 
 
 def _rsp_spy_20d_rel() -> tuple[float, datetime]:
@@ -64,11 +67,16 @@ class SectorsCollector(BaseCollector):
         details: dict[str, dict[str, Any]] = {}
         latest_as_of: datetime | None = None
         for sym in SECTOR_ETFS:
-            ok, price, as_of = _above_50dma(sym)
+            ok, price, session_pct, as_of = _above_50dma(sym)
             if price is not None and as_of is not None:
                 total += 1
                 above += 1 if ok else 0
-                details[sym] = {"above_50dma": ok, "price": price, "as_of": as_of}
+                details[sym] = {
+                    "above_50dma": ok,
+                    "price": price,
+                    "session_change_pct": session_pct,
+                    "as_of": as_of,
+                }
                 latest_as_of = as_of if latest_as_of is None else max(latest_as_of, as_of)
         if total == 0:
             raise CollectorError("No sector ETF data")

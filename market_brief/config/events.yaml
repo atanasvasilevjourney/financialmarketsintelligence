@@ -1,4 +1,20 @@
-# Static / curated events (Phase 1). Live macro calendar adapter is TODO.
-# Times are ISO8601 UTC; display layer converts to America/New_York and Europe/Sofia.
+# Curated macro / policy events (user-editable). Live macro calendar adapter is Phase 3.
+# Times are ISO8601 UTC; render converts to America/New_York.
 
-events: []
+events:
+  - title: "Jackson Hole Economic Symposium (Fed chair remarks)"
+    start_utc: "2026-08-27T14:00:00+00:00"
+    importance: high
+    source: events.yaml
+  - title: "FOMC rate decision + press conference"
+    start_utc: "2026-09-17T18:00:00+00:00"
+    importance: high
+    source: events.yaml
+  - title: "US CPI release (BLS)"
+    start_utc: "2026-10-15T12:30:00+00:00"
+    importance: high
+    source: events.yaml
+  - title: "US Nonfarm Payrolls (BLS)"
+    start_utc: "2026-11-06T13:30:00+00:00"
+    importance: high
+    source: events.yaml
