@@ -1,0 +1,9 @@
+# Pre-market New York schedule stub (not an active schedule)
+
+Production delivery: .github/workflows/brief.yml (~07:35 America/New_York).
+
+When enabling Cursor hosting cron, add bot/schedules/pre-market-ny.md with:
+  cron: "35 12 * * 1-5"   # EST example (adjust for EDT)
+  Handler or markdown body should call run_brief with dryRun unless operator policy changes.
+
+Secrets: bind DISCORD_WEBHOOK_URL / TELEGRAM_* on deployment — never commit values here.
