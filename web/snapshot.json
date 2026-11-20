@@ -1,0 +1,485 @@
+{
+  "meta": {
+    "mode": "sample",
+    "label": "SAMPLE \u2014 fixture data (2026-10-16 dry-run)",
+    "source": "market_brief/tests/fixtures"
+  },
+  "payload": {
+    "trading_date": "2026-10-16",
+    "generated_at": "2026-10-16T14:00:00Z",
+    "regime": {
+      "label": "RISK_ON",
+      "score_sum": 4,
+      "exposure_ceiling_pct": 100,
+      "reasons": [
+        "VIX 18.5",
+        "VIX/VIX3M 0.92",
+        "SPX vs 50DMA +2.5%",
+        "SPX vs 200DMA +8.0%",
+        "Sector breadth 72%",
+        "RSP/SPY 20d +0.30%"
+      ],
+      "inputs_used": [
+        "vix",
+        "vix_term_ratio",
+        "spx_vs_50dma",
+        "spx_vs_200dma",
+        "sector_breadth",
+        "rsp_spy_20d"
+      ],
+      "inputs_missing": [
+        "hy_oas_zscore_252d",
+        "yield_curve_10y2y"
+      ],
+      "signal_scores": {
+        "vix": 0,
+        "vix_term_ratio": 1,
+        "spx_vs_50dma": 1,
+        "spx_vs_200dma": 1,
+        "sector_breadth": 1,
+        "rsp_spy_20d": 0
+      }
+    },
+    "snapshot": {
+      "trading_date": "2026-10-16",
+      "collected_at": "2026-10-16T14:00:00Z",
+      "vix": {
+        "value": 18.5,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "vix",
+        "meta": {}
+      },
+      "vix3m": {
+        "value": 20.1,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "vix3m",
+        "meta": {}
+      },
+      "vix_term_ratio": {
+        "value": 0.92,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "vix_term_ratio",
+        "meta": {}
+      },
+      "hy_oas": {
+        "value": 3.25,
+        "as_of": "2026-10-15T00:00:00Z",
+        "source": "fred-fixture",
+        "stale_after_minutes": 1440,
+        "status": "STALE",
+        "label": "hy_oas",
+        "meta": {}
+      },
+      "hy_oas_zscore_252d": {
+        "value": 0.1,
+        "as_of": "2026-10-15T00:00:00Z",
+        "source": "fred-fixture",
+        "stale_after_minutes": 1440,
+        "status": "STALE",
+        "label": "hy_oas_zscore_252d",
+        "meta": {}
+      },
+      "yield_curve_10y2y": {
+        "value": 0.15,
+        "as_of": "2026-10-15T00:00:00Z",
+        "source": "fred-fixture",
+        "stale_after_minutes": 1440,
+        "status": "STALE",
+        "label": "yield_curve_10y2y",
+        "meta": {}
+      },
+      "spx": {
+        "value": 5800.0,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "spx",
+        "meta": {}
+      },
+      "spx_vs_50dma_pct": {
+        "value": 2.5,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "spx_vs_50dma",
+        "meta": {}
+      },
+      "spx_vs_200dma_pct": {
+        "value": 8.0,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "spx_vs_200dma",
+        "meta": {}
+      },
+      "sector_breadth": {
+        "value": 0.72,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "sector_breadth",
+        "meta": {}
+      },
+      "rsp_spy_20d_rel_pct": {
+        "value": 0.3,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "rsp_spy_20d",
+        "meta": {}
+      },
+      "sector_details": {
+        "XLK": {
+          "value": 220.5,
+          "as_of": "2026-10-16T20:00:00Z",
+          "source": "yfinance-fixture",
+          "stale_after_minutes": 2880,
+          "status": "OK",
+          "label": "XLK",
+          "meta": {
+            "above_50dma": true,
+            "session_change_pct": 1.2
+          }
+        },
+        "XLF": {
+          "value": 42.1,
+          "as_of": "2026-10-16T20:00:00Z",
+          "source": "yfinance-fixture",
+          "stale_after_minutes": 2880,
+          "status": "OK",
+          "label": "XLF",
+          "meta": {
+            "above_50dma": false,
+            "session_change_pct": -0.8
+          }
+        }
+      }
+    },
+    "calendar": [],
+    "narrative": {
+      "headline": "\u041f\u0430\u0437\u0430\u0440\u0435\u043d \u0440\u0435\u0436\u0438\u043c: RISK_ON",
+      "bullets": [
+        "\u0415\u043a\u0441\u043f\u043e\u0437\u0438\u0446\u0438\u044f (\u0442\u0430\u0432\u0430\u043d): 100%",
+        "\u0421\u0438\u0433\u043d\u0430\u043b\u0438: 4 (\u0438\u0437\u043f\u043e\u043b\u0437\u0432\u0430\u043d\u0438 6)",
+        "\u041b\u0438\u043f\u0441\u0432\u0430\u0449\u0438 \u0432\u0445\u043e\u0434\u043e\u0432\u0435: hy_oas_zscore_252d, yield_curve_10y2y",
+        "\u0427\u0430\u0441\u0442\u0438\u0447\u043d\u0438 \u0434\u0430\u043d\u043d\u0438 \u2014 \u043f\u0440\u043e\u0432\u0435\u0440\u0435\u0442\u0435 STALE/MISSING \u043f\u043e\u043b\u0435\u0442\u0430."
+      ],
+      "tone": "neutral",
+      "lang": "bg"
+    },
+    "degraded": true,
+    "collector_errors": [],
+    "gex_symbols": [
+      {
+        "upstream_symbol": "SPY",
+        "display_symbol": "SPX",
+        "spot": {
+          "value": 580.25,
+          "as_of": "2026-10-16T20:15:00Z",
+          "source": "cache",
+          "stale_after_minutes": 60,
+          "status": "OK",
+          "label": "SPX spot",
+          "meta": {}
+        },
+        "net_gex": {
+          "value": 1250000000.0,
+          "as_of": "2026-10-16T20:15:00Z",
+          "source": "cache",
+          "stale_after_minutes": 60,
+          "status": "OK",
+          "label": "SPX net GEX",
+          "meta": {}
+        },
+        "gamma_regime": {
+          "value": null,
+          "as_of": "2026-10-16T20:15:00Z",
+          "source": "cache",
+          "stale_after_minutes": 60,
+          "status": "OK",
+          "label": "positive",
+          "meta": {}
+        },
+        "call_wall": {
+          "value": 585.0,
+          "as_of": "2026-10-16T20:15:00Z",
+          "source": "cache",
+          "stale_after_minutes": 60,
+          "status": "OK",
+          "label": "SPX call wall",
+          "meta": {}
+        },
+        "put_wall": {
+          "value": 570.0,
+          "as_of": "2026-10-16T20:15:00Z",
+          "source": "cache",
+          "stale_after_minutes": 60,
+          "status": "OK",
+          "label": "SPX put wall",
+          "meta": {}
+        },
+        "zero_gamma": {
+          "value": 575.0,
+          "as_of": "2026-10-16T20:15:00Z",
+          "source": "cache",
+          "stale_after_minutes": 60,
+          "status": "OK",
+          "label": "SPX zero gamma",
+          "meta": {}
+        },
+        "max_pain": {
+          "value": 580.0,
+          "as_of": "2026-10-16T20:15:00Z",
+          "source": "cache",
+          "stale_after_minutes": 60,
+          "status": "OK",
+          "label": "SPX max pain",
+          "meta": {}
+        }
+      },
+      {
+        "upstream_symbol": "QQQ",
+        "display_symbol": "NDX",
+        "spot": {
+          "value": 502.1,
+          "as_of": "2026-10-15T20:00:00Z",
+          "source": "daily_gex",
+          "stale_after_minutes": 60,
+          "status": "STALE",
+          "label": "NDX spot",
+          "meta": {}
+        },
+        "net_gex": {
+          "value": -320000000.0,
+          "as_of": "2026-10-15T20:00:00Z",
+          "source": "daily_gex",
+          "stale_after_minutes": 60,
+          "status": "STALE",
+          "label": "NDX net GEX",
+          "meta": {}
+        },
+        "gamma_regime": {
+          "value": null,
+          "as_of": "2026-10-15T20:00:00Z",
+          "source": "daily_gex",
+          "stale_after_minutes": 60,
+          "status": "STALE",
+          "label": "negative",
+          "meta": {}
+        },
+        "call_wall": {
+          "value": 510.0,
+          "as_of": "2026-10-15T20:00:00Z",
+          "source": "daily_gex",
+          "stale_after_minutes": 60,
+          "status": "STALE",
+          "label": "NDX call wall",
+          "meta": {}
+        },
+        "put_wall": {
+          "value": 495.0,
+          "as_of": "2026-10-15T20:00:00Z",
+          "source": "daily_gex",
+          "stale_after_minutes": 60,
+          "status": "STALE",
+          "label": "NDX put wall",
+          "meta": {}
+        },
+        "zero_gamma": {
+          "value": 505.0,
+          "as_of": "2026-10-15T20:00:00Z",
+          "source": "daily_gex",
+          "stale_after_minutes": 60,
+          "status": "STALE",
+          "label": "NDX zero gamma",
+          "meta": {}
+        },
+        "max_pain": {
+          "value": null,
+          "as_of": null,
+          "source": "daily_gex",
+          "stale_after_minutes": 60,
+          "status": "MISSING",
+          "label": "NDX max pain",
+          "meta": {}
+        }
+      }
+    ],
+    "exposure_footer": {
+      "exposure_pct": 100,
+      "bias": "RISK-ON",
+      "regime_label": "RISK_ON",
+      "new_entries": "ALLOW",
+      "reasoning": [
+        "VIX 18.5",
+        "VIX/VIX3M 0.92",
+        "SPX vs 50DMA +2.5%",
+        "SPX vs 200DMA +8.0%",
+        "Sector breadth 72%"
+      ]
+    },
+    "technicals_es": {
+      "vs_20dma_pct": {
+        "value": null,
+        "as_of": null,
+        "source": "technicals_todo",
+        "stale_after_minutes": 120,
+        "status": "MISSING",
+        "label": "vs_20dma_pct",
+        "meta": {}
+      },
+      "vs_50dma_pct": {
+        "value": null,
+        "as_of": null,
+        "source": "technicals_todo",
+        "stale_after_minutes": 120,
+        "status": "MISSING",
+        "label": "vs_50dma_pct",
+        "meta": {}
+      },
+      "vs_200dma_pct": {
+        "value": null,
+        "as_of": null,
+        "source": "technicals_todo",
+        "stale_after_minutes": 120,
+        "status": "MISSING",
+        "label": "vs_200dma_pct",
+        "meta": {}
+      },
+      "rsi": {
+        "value": null,
+        "as_of": null,
+        "source": "technicals_todo",
+        "stale_after_minutes": 120,
+        "status": "MISSING",
+        "label": "rsi",
+        "meta": {}
+      },
+      "macd_state": {
+        "value": null,
+        "as_of": null,
+        "source": "technicals_todo",
+        "stale_after_minutes": 120,
+        "status": "MISSING",
+        "label": "macd_state",
+        "meta": {}
+      },
+      "atr": {
+        "value": null,
+        "as_of": null,
+        "source": "technicals_todo",
+        "stale_after_minutes": 120,
+        "status": "MISSING",
+        "label": "atr",
+        "meta": {}
+      },
+      "bollinger_position": {
+        "value": null,
+        "as_of": null,
+        "source": "technicals_todo",
+        "stale_after_minutes": 120,
+        "status": "MISSING",
+        "label": "bollinger_position",
+        "meta": {}
+      }
+    },
+    "kpi_strip": {
+      "es": {
+        "value": 5812.5,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "ES",
+        "meta": {}
+      },
+      "nq": {
+        "value": 20450.0,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "NQ",
+        "meta": {}
+      },
+      "vix": {
+        "value": 18.5,
+        "as_of": "2026-10-16T20:00:00Z",
+        "source": "yfinance-fixture",
+        "stale_after_minutes": 2880,
+        "status": "OK",
+        "label": "vix",
+        "meta": {}
+      },
+      "put_call": {
+        "value": null,
+        "as_of": null,
+        "source": "equity_pc_todo",
+        "stale_after_minutes": 2880,
+        "status": "MISSING",
+        "label": "Equity P/C",
+        "meta": {}
+      }
+    },
+    "opex_badge": {
+      "monthly_opex_date": "2026-10-16",
+      "badge": "INDEX OpEx TODAY",
+      "session_offset": 0,
+      "show_opex_block": true,
+      "rule": "spx_monthly_third_friday_nyse_weekdays"
+    },
+    "opex_flow": {
+      "status": "MISSING",
+      "note": "Sidecar v2 shadow \u03b3 / \u03bbG / charm not wired \u2014 net GEX only",
+      "lambda_g": null,
+      "charm": null
+    },
+    "desk_context": [
+      {
+        "source_id": "paralia",
+        "title": "Paralia Trading Desk",
+        "url": "https://paraliatradingdesk.substack.com/",
+        "cadence": "weekly",
+        "themes": [
+          "inflation",
+          "rotation",
+          "ai_credit",
+          "oil"
+        ],
+        "alignment": "partial",
+        "tension": "Desk themes inflation, rotation, ai_credit, oil; our regime RISK_ON (100% ceiling); payload degraded \u2014 verify STALE/MISSING before comparing narratives",
+        "our_edge": "ORBIS net GEX + regime engine"
+      },
+      {
+        "source_id": "stochvol_opex",
+        "title": "StochVolTrader \u2014 OpEx mechanics",
+        "url": "https://stochvoltrader.substack.com/",
+        "cadence": "event",
+        "themes": [
+          "vanna",
+          "charm",
+          "lambda_g",
+          "liquidity_profile"
+        ],
+        "alignment": "partial",
+        "tension": "Desk themes vanna, charm, lambda_g, liquidity_profile; our regime RISK_ON (100% ceiling); payload degraded \u2014 verify STALE/MISSING before comparing narratives",
+        "our_edge": "ORBIS net GEX + regime engine"
+      }
+    ],
+    "alignment_summary": "Desk alignment (paralia, stochvol_opex): themes vs our regime RISK_ON (100% ceiling); GEX OK."
+  }
+}

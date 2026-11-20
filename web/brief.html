@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ORBIS GEX — Daily Brief</title>
+<style>
+
+:root { --bg:#0b0f14; --card:#121820; --muted:#8b9cb3; --text:#e8eef7;
+  --vol:#7c5cff; --macro:#00b894; --signal:#f39c12; --accent:#3d8bfd; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,sans-serif; background:var(--bg);
+  color:var(--text); line-height:1.45; font-size:15px; }
+.wrap { max-width:480px; margin:0 auto; padding:12px 14px 32px; }
+.hdr { text-align:center; padding:16px 8px; border-bottom:1px solid #1e2836; }
+.hdr h1 { font-size:1.05rem; letter-spacing:.12em; margin:0 0 4px; }
+.hdr .sub { color:var(--accent); font-size:.75rem; letter-spacing:.2em; }
+.hdr .date { color:var(--muted); font-size:.8rem; margin-top:8px; }
+.kpi { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:14px 0; }
+.kpi div { background:var(--card); border-radius:8px; padding:8px 4px; text-align:center; }
+.kpi span { display:block; font-size:.65rem; color:var(--muted); }
+.kpi strong { font-size:.95rem; }
+.card { border-left:4px solid var(--vol); background:var(--card); border-radius:0 10px 10px 0;
+  padding:12px 14px; margin:10px 0; }
+.card.macro { border-color:var(--macro); }
+.card.signal { border-color:var(--signal); }
+.card h3 { margin:0 0 6px; font-size:.72rem; letter-spacing:.15em; color:var(--muted); }
+section { margin:18px 0; }
+section h2 { font-size:.78rem; letter-spacing:.14em; color:var(--accent); margin:0 0 8px; }
+table { width:100%; border-collapse:collapse; font-size:.85rem; }
+td, th { padding:6px 4px; border-bottom:1px solid #1e2836; text-align:left; }
+td.num { text-align:right; font-variant-numeric:tabular-nums; }
+.footer-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:20px;
+  padding-top:14px; border-top:1px solid #1e2836; }
+.footer-strip div { text-align:center; font-size:.72rem; }
+.footer-strip strong { display:block; font-size:.85rem; margin-top:2px; }
+.degraded { background:#3d1f1f; color:#ffb4b4; padding:8px 12px; border-radius:8px;
+  font-size:.85rem; margin:10px 0; }
+.provenance { color:var(--muted); font-size:.72rem; margin-top:16px; }
+.sector-bars { margin-top:10px; }
+.bar-row { display:flex; align-items:center; gap:8px; margin:4px 0; font-size:.78rem; }
+.bar-row .sym { width:36px; color:var(--muted); }
+.bar-track { flex:1; height:8px; background:#1e2836; border-radius:4px; position:relative; }
+.bar-fill { height:100%; border-radius:4px; position:absolute; top:0; max-width:50%; }
+.bar-fill.up { background:var(--macro); left:50%; }
+.bar-fill.down { background:#e74c3c; right:50%; }
+.bar-pct { width:52px; text-align:right; font-variant-numeric:tabular-nums; }
+.desk-item { font-size:.85rem; margin:8px 0; padding:8px; background:#0f141c; border-radius:8px; }
+.opex-badge { display:inline-block; background:#2a1f4a; color:#c9b8ff; padding:4px 10px;
+  border-radius:999px; font-size:.72rem; letter-spacing:.08em; margin:8px 0; }
+
+</style></head><body><div class="wrap">
+<header class="hdr">
+<h1>ORBIS GEX — Daily Brief</h1>
+<div class="sub">PRE-MARKET BRIEF</div>
+<div class="date">FRIDAY • 16 OCT 2026</div>
+<div class="date">Generated 2026-10-16 10:00 EDT</div>
+</header>
+<div class="degraded">⚠ Degraded run — see provenance for STALE/MISSING sources.</div>
+<div class="kpi">
+<div>
+<span>ES</span>
+<strong>5,812.50</strong>
+</div>
+<div>
+<span>NQ</span>
+<strong>20,450.00</strong>
+</div>
+<div>
+<span>VIX</span>
+<strong>18.5</strong>
+</div>
+<div>
+<span>P/C</span>
+<strong>Equity P/C</strong>
+</div>
+</div>
+<article class="card ">
+<h3>VOLATILITY</h3>
+<p>Експозиция (таван): 100%</p>
+</article>
+<article class="card macro">
+<h3>MACRO</h3>
+<p>Сигнали: 4 (използвани 6)</p>
+</article>
+<article class="card signal">
+<h3>SIGNAL</h3>
+<p>Липсващи входове: hy_oas_zscore_252d, yield_curve_10y2y</p>
+</article>
+<section><h2>INDICES</h2><table>
+<tr><th>Symbol</th><th class="num">Level</th><th class="num">vs prior</th></tr>
+<tr><td>SPX</td><td class="num">5,800.00</td><td class="num">+2.50%</td></tr>
+<tr><td>VIX</td><td class="num">18.5</td><td class="num">—</td></tr>
+</table></section>
+<section><h2>MARKET REGIME</h2>
+<p><strong>RISK_ON</strong> · score 4</p>
+<p>Breadth +0.72% [OK] · source yfinance-fixture</p>
+<p>Top risks: VIX 18.5; VIX/VIX3M 0.92; SPX vs 50DMA +2.5%</p>
+</section>
+<section><h2>EXPOSURE DECISION</h2>
+<p>Net exposure ceiling <strong>100%</strong> · Bias <strong>RISK-ON</strong> · New entries: <strong>ALLOW</strong></p>
+<ul>
+<li>VIX 18.5</li>
+<li>VIX/VIX3M 0.92</li>
+<li>SPX vs 50DMA +2.5%</li>
+<li>SPX vs 200DMA +8.0%</li>
+<li>Sector breadth 72%</li>
+</ul>
+</section>
+<section><h2>TECHNICALS · ES DAILY</h2><table>
+<tr><td>vs 20 DMA</td><td class="num">vs_20dma_pct</td><td class="num">[MISSING]</td></tr>
+<tr><td>vs 50 DMA</td><td class="num">vs_50dma_pct</td><td class="num">[MISSING]</td></tr>
+<tr><td>vs 200 DMA</td><td class="num">vs_200dma_pct</td><td class="num">[MISSING]</td></tr>
+<tr><td>RSI</td><td class="num">rsi</td><td class="num">[MISSING]</td></tr>
+<tr><td>MACD</td><td class="num">macd_state</td><td class="num">[MISSING]</td></tr>
+<tr><td>ATR</td><td class="num">atr</td><td class="num">[MISSING]</td></tr>
+<tr><td>Bollinger</td><td class="num">bollinger_position</td><td class="num">[MISSING]</td></tr>
+</table></section>
+<section><h2>GEX · OPTIONS GREEKS</h2>
+<h3>SPX <small>(SPY)</small></h3>
+<table>
+<tr><td>Net GEX</td><td class="num">+1.25B</td><td class="num">[OK]</td></tr>
+<tr><td>Gamma regime</td><td class="num">POSITIVE</td><td class="num">[OK]</td></tr>
+<tr><td>Call wall</td><td class="num">585.0</td><td class="num">[OK]</td></tr>
+<tr><td>Put wall</td><td class="num">570.0</td><td class="num">[OK]</td></tr>
+<tr><td>Zero gamma</td><td class="num">575.0</td><td class="num">[OK]</td></tr>
+<tr><td>Spot</td><td class="num">580.2</td><td class="num">[OK]</td></tr>
+</table>
+<h3>NDX <small>(QQQ)</small></h3>
+<table>
+<tr><td>Net GEX</td><td class="num">STALE -0.32B</td><td class="num">[STALE]</td></tr>
+<tr><td>Gamma regime</td><td class="num">NEGATIVE</td><td class="num">[STALE]</td></tr>
+<tr><td>Call wall</td><td class="num">STALE 510.0</td><td class="num">[STALE]</td></tr>
+<tr><td>Put wall</td><td class="num">STALE 495.0</td><td class="num">[STALE]</td></tr>
+<tr><td>Zero gamma</td><td class="num">STALE 505.0</td><td class="num">[STALE]</td></tr>
+<tr><td>Spot</td><td class="num">STALE 502.1</td><td class="num">[STALE]</td></tr>
+</table>
+</section>
+<section><h2>OpEx FLOW</h2>
+<p>Sidecar v2 shadow γ / λG / charm not wired — net GEX only [MISSING]</p>
+</section>
+<section><h2>SECTOR ROTATION · DAILY</h2>
+<p>Breadth +0.72% · RSP/SPY 20d +0.30%</p>
+<table><tr><th>ETF</th><th class="num">Above 50 DMA</th></tr>
+<tr><td>XLF</td><td class="num">no [OK]</td></tr>
+<tr><td>XLK</td><td class="num">yes [OK]</td></tr>
+</table>
+<div class="sector-bars">
+<div class="bar-row">
+<span class="sym">XLF</span>
+<div class="bar-track">
+<div class="bar-fill down" style="width:33.3%;"></div>
+</div>
+<span class="bar-pct">-0.80%</span>
+</div>
+<div class="bar-row">
+<span class="sym">XLK</span>
+<div class="bar-track">
+<div class="bar-fill up" style="width:50.0%;"></div>
+</div>
+<span class="bar-pct">+1.20%</span>
+</div>
+</div>
+</section>
+<section><h2>DESK CONTEXT</h2>
+<p>Desk alignment (paralia, stochvol_opex): themes vs our regime RISK_ON (100% ceiling); GEX OK.</p>
+<div class="desk-item">
+<strong>Paralia Trading Desk</strong> <span class="muted">(paralia)</span>
+<br/><a href="https://paraliatradingdesk.substack.com/">https://paraliatradingdesk.substack.com/</a>
+<p>Themes: inflation, rotation, ai_credit, oil</p>
+<p>Alignment: partial</p>
+</div>
+<div class="desk-item">
+<strong>StochVolTrader — OpEx mechanics</strong> <span class="muted">(stochvol_opex)</span>
+<br/><a href="https://stochvoltrader.substack.com/">https://stochvoltrader.substack.com/</a>
+<p>Themes: vanna, charm, lambda_g, liquidity_profile</p>
+<p>Alignment: partial</p>
+</div>
+</section>
+<section><h2>CALENDAR</h2>
+<div class="opex-badge">INDEX OpEx TODAY (2026-10-16)</div>
+<p>No curated events (live macro calendar TODO)</p>
+<p>Tonight's earnings: TODO (high-impact filter)</p>
+<p>Global overnight indices: TODO</p>
+</section>
+<div class="footer-strip">
+<div>
+<span>EXPOSURE %</span>
+<strong>100</strong>
+</div>
+<div>
+<span>BIAS</span>
+<strong>RISK-ON</strong>
+</div>
+<div>
+<span>REGIME</span>
+<strong>RISK_ON</strong>
+</div>
+<div>
+<span>NEW ENTRIES</span>
+<strong>ALLOW</strong>
+</div>
+</div>
+<div class="provenance">Data provenance: HY OAS: STALE; NDX net GEX: STALE; NDX spot: STALE; Technicals RSI: MISSING</div>
+</div></body></html>
