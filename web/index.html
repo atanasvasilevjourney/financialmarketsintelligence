@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ORBIS Daily Brief — Financial Markets Intelligence</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="shell">
+      <header class="app-bar">
+        <h1>Financial Markets Intelligence</h1>
+        <p class="tagline">ORBIS GEX · Daily Brief reader</p>
+        <p id="viewer" class="viewer hidden" aria-live="polite"></p>
+        <div id="sample-banner" class="sample-banner hidden" role="status"></div>
+        <p id="as-of" class="as-of"></p>
+      </header>
+      <main id="brief-root" class="brief-root" aria-busy="true">
+        <p class="loading">Loading brief…</p>
+      </main>
+      <footer class="app-foot">
+        <p id="provenance" class="provenance"></p>
+        <p class="disclaimer">Not investment advice. Numbers shown are from the committed snapshot only until live refresh is wired.</p>
+      </footer>
+    </div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
